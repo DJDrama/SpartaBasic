@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+
     namespace = "com.spartabasic.www"
     compileSdk = 34
 
@@ -32,6 +33,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 

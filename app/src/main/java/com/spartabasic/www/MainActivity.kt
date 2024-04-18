@@ -1,6 +1,8 @@
 package com.spartabasic.www
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,9 +20,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val TAG = "MainActivity"
+    private var counter = 1
+    private var randomValue = (1..100).random()
+    private var isStopped = false
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i(TAG, "onCreate")
         enableEdgeToEdge()
+        binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -29,14 +39,69 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        if (savedInstanceState != null) {
+            randomValue = savedInstanceState.getInt("randomValue")
+            isStopped = savedInstanceState.getBoolean("isStopped")
+        }
+
         setupButton()
         setRandomValueBetweenOneToHundred()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.i(TAG, "onRestart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "onResume")
         setJobAndLaunch()
     }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i(TAG, "onPause")
+        job?.cancel()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "onStop")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "onDestroy")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.i(TAG, "onRestoreInstanceState")
+        counter = savedInstanceState.getInt("counter")
+        if (counter > 100) {
+            counter = 100
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i(TAG, "onSaveInstanceState")
+        outState.putInt("counter", counter)
+        outState.putInt("randomValue", randomValue)
+        outState.putBoolean("isStopped", isStopped)
+    }
+
     private fun setupButton() {
         binding.clickButton.setOnClickListener {
             checkAnswerAndShowToast()
-            setJobAndLaunch()
+            job?.cancel()
+            isStopped = true
         }
     }
 
@@ -45,13 +110,18 @@ class MainActivity : AppCompatActivity() {
         binding.textViewRandom.text = randomValue.toString()
     }
 
+
     private fun setJobAndLaunch() {
         job?.cancel() // job is uninitialized exception
         job = lifecycleScope.launch {
-            for (j in 1..100) {
+            while (counter <= 100) {
                 if (isActive) {
-                    binding.spartaTextView.text = j.toString()
-                    delay(10) // 1초 = 1000
+                    binding.spartaTextView.text = counter.toString()
+                    if (isStopped) {
+                        break
+                    }
+                    delay(500) // 1초 = 1000
+                    counter += 1
                 }
             }
         }
@@ -62,6 +132,8 @@ class MainActivity : AppCompatActivity() {
         val randomText = binding.textViewRandom.text.toString()
         if (spartaText == randomText) {
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
         } else {
             Toast.makeText(this, "Wrong!", Toast.LENGTH_SHORT).show()
         }

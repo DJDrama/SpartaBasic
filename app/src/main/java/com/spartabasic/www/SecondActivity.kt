@@ -1,46 +1,32 @@
 package com.spartabasic.www
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.spartabasic.www.databinding.ActivitySecondBinding
 
 class SecondActivity : AppCompatActivity() {
     private val TAG = "SecondActivity"
+    private lateinit var binding: ActivitySecondBinding
+    private lateinit var adapter: RecordRecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate")
+        binding = ActivitySecondBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        adapter = RecordRecyclerViewAdapter(recordClickListener = object : RecordClickListener {
+            override fun onClickItem(record: Record) {
+                Toast.makeText(this@SecondActivity, "${record.record}", Toast.LENGTH_SHORT).show()
+            }
+        })
+        binding.recyclerView.adapter = this.adapter
+
+        adapter.submitList(myRecords)
 
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        Log.i(TAG, "onRestart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i(TAG, "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.i(TAG, "onPause")
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i(TAG, "onStop")
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i(TAG, "onStart")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i(TAG, "onDestroy")
-    }
 }
+
+
+

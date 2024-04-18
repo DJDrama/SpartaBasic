@@ -106,7 +106,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRandomValueBetweenOneToHundred() {
-        val randomValue = (1..100).random()
         binding.textViewRandom.text = randomValue.toString()
     }
 
@@ -120,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                     if (isStopped) {
                         break
                     }
-                    delay(500) // 1초 = 1000
+                    delay(10) // 1초 = 1000
                     counter += 1
                 }
             }
@@ -130,12 +129,12 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswerAndShowToast() {
         val spartaText = binding.spartaTextView.text.toString()
         val randomText = binding.textViewRandom.text.toString()
+        val intent = Intent(this, SecondActivity::class.java)
         if (spartaText == randomText) {
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, SecondActivity::class.java)
-            startActivity(intent)
         } else {
             Toast.makeText(this, "Wrong!", Toast.LENGTH_SHORT).show()
         }
+        startActivity(intent)
     }
 }

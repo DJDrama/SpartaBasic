@@ -3,6 +3,7 @@ package com.spartabasic.www
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var job: Job? = null
 
     private lateinit var binding: ActivityMainBinding
@@ -28,7 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate")
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -44,13 +44,8 @@ class MainActivity : AppCompatActivity() {
             isStopped = savedInstanceState.getBoolean("isStopped")
         }
 
-        setupButton()
+        initButtons()
         setRandomValueBetweenOneToHundred()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.i(TAG, "onRestart")
     }
 
     override fun onResume() {
@@ -63,21 +58,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         Log.i(TAG, "onPause")
         job?.cancel()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i(TAG, "onStop")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i(TAG, "onStart")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i(TAG, "onDestroy")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -97,12 +77,14 @@ class MainActivity : AppCompatActivity() {
         outState.putBoolean("isStopped", isStopped)
     }
 
-    private fun setupButton() {
+    private fun initButtons() {
         binding.clickButton.setOnClickListener {
             checkAnswerAndShowToast()
             job?.cancel()
             isStopped = true
         }
+        binding.restartButton.setOnClickListener(this)
+        binding.checkRecordButton.setOnClickListener(this)
     }
 
     private fun setRandomValueBetweenOneToHundred() {
@@ -119,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                     if (isStopped) {
                         break
                     }
-                    delay(10) // 1초 = 1000
+                    delay(250) // 1초 = 1000
                     counter += 1
                 }
             }
@@ -129,12 +111,60 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswerAndShowToast() {
         val spartaText = binding.spartaTextView.text.toString()
         val randomText = binding.textViewRandom.text.toString()
-        val intent = Intent(this, SecondActivity::class.java)
         if (spartaText == randomText) {
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
+            myRecords.add(
+                element = Record(
+                    trial = myRecords.size + 1,
+                    target = randomText.toInt(),
+                    record = spartaText.toInt(),
+                    // enum
+                    isCorrect = AnswerType.CORRECT
+
+                    // sealed
+                    //  isCorrect = AnotherAnswerType.Correct()
+                )
+            )
         } else {
             Toast.makeText(this, "Wrong!", Toast.LENGTH_SHORT).show()
+            myRecords.add(
+                element = Record(
+                    trial = myRecords.size + 1,
+                    target = randomText.toInt(),
+                    record = spartaText.toInt(),
+                    // enum
+                    isCorrect = AnswerType.WRONG
+
+                    // sealed
+                    //isCorrect = AnotherAnswerType.Wrong(stupidLevel = (1..5).random())
+                )
+            )
         }
-        startActivity(intent)
+    }
+
+    override fun onClick(p0: View?) {
+        p0?.let {
+            when (it) {
+                binding.restartButton -> {
+                    isStopped = false
+                    counter = 1
+                    randomValue = (1..100).random()
+                    setRandomValueBetweenOneToHundred()
+                    setJobAndLaunch()
+                }
+
+                binding.checkRecordButton -> {
+                    if (myRecords.isEmpty()) {
+                        Toast.makeText(this, "You don't have any record!", Toast.LENGTH_SHORT)
+                            .show()
+                        return
+                    }
+                    val intent = Intent(this, SecondActivity::class.java)
+                    // enum
+                    intent.putExtra("test", AnswerType.CORRECT);
+                    startActivity(intent)
+                }
+            }
+        }
     }
 }

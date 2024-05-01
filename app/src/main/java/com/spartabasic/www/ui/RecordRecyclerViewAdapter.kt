@@ -1,11 +1,12 @@
-package com.spartabasic.www
+package com.spartabasic.www.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.spartabasic.www.data.AnswerType
+import com.spartabasic.www.data.Record
 import com.spartabasic.www.databinding.ItemCorrectRecordBinding
 import com.spartabasic.www.databinding.ItemWrongRecordBinding
-import java.lang.IllegalStateException
 
 interface RecordClickListener {
     fun onClickItem(record: Record)

@@ -23,7 +23,7 @@
         </activity>
 
         <!--android:theme="@style/Theme.AppCompat.Dialog"-->
-        <activity android:name=".SecondActivity" />
+        <activity android:name=".ui.SecondActivity" />
     </application>
 
 </manifest>

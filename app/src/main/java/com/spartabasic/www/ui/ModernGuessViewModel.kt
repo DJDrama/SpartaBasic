@@ -10,7 +10,9 @@ import com.spartabasic.www.data.Record
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 
 class ModernGuessViewModel : ViewModel() {
@@ -52,6 +54,7 @@ class ModernGuessViewModel : ViewModel() {
         job = mainCoroutineScope.launch {
             Log.i(TAG, "Inside the launch block!")
             while (counterValue <= 100) {
+                ensureActive()
                 _counter.value = counterValue
                 delay(timeMillis = (100..500).random().toLong())
                 if (counterValue == 100)
@@ -104,7 +107,7 @@ class ModernGuessViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         Log.i(TAG, "onCleared")
-        cancelCounting()
+        mainCoroutineScope.cancel()
     }
 
 }

@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -19,7 +21,21 @@ android {
     }
 
     buildTypes {
+        val gradleLocalProperties = gradleLocalProperties(
+            projectRootDir = rootDir,
+            providers = providers
+        )
+        val apiKey = gradleLocalProperties.getProperty("REST_API_KEY")
+        val baseUrl = gradleLocalProperties.getProperty("KAKAO_BASE_URL")
+        debug {
+            buildConfigField("String", "REST_API_KEY", "\"$apiKey\"")
+            buildConfigField("String", "KAKAO_BASE_URL", "\"$baseUrl\"")
+            isDebuggable = true
+            isMinifyEnabled = false
+        }
         release {
+            buildConfigField("String", "REST_API_KEY", "\"$apiKey\"")
+            buildConfigField("String", "KAKAO_BASE_URL", "\"$baseUrl\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,6 +53,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -53,4 +70,11 @@ dependencies {
 
     // implementation("androidx.fragment:fragment-ktx:1.2.0")
     implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.retrofit)
+    implementation(platform(libs.okHttpBom))
+    implementation(libs.logging.interceptor)
+    implementation(libs.converter.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.moshi.adapters)
 }

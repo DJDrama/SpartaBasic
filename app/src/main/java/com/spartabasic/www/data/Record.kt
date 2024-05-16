@@ -1,7 +1,7 @@
-package com.spartabasic.www
+package com.spartabasic.www.data
 
 data class Record(
-    val trial: Int,
+    val trial: Int = 0,
     val target: Int,
     val record: Int,
     // enum

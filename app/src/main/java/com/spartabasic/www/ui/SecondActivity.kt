@@ -1,20 +1,31 @@
-package com.spartabasic.www
+package com.spartabasic.www.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.spartabasic.www.data.AnswerType
+import com.spartabasic.www.data.MyRecords
+import com.spartabasic.www.data.Record
 import com.spartabasic.www.databinding.ActivitySecondBinding
+import kotlin.properties.Delegates
 
 class SecondActivity : AppCompatActivity() {
     private val TAG = "SecondActivity"
     private lateinit var binding: ActivitySecondBinding
     private lateinit var adapter: RecordRecyclerViewAdapter
+
+    private var observableInt by Delegates.observable(1) { property, old, new ->
+        Log.e(TAG, "observable : " + old + " " + new)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySecondBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        observableInt = 10
 
         // enum
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -55,7 +66,7 @@ class SecondActivity : AppCompatActivity() {
         adapter.setHasStableIds(true)
         binding.recyclerView.adapter = this.adapter
 
-        adapter.submitList(myRecords)
+        adapter.submitList(MyRecords.getItems())
 
     }
 

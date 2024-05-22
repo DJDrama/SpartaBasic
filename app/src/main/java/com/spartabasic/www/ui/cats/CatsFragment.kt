@@ -3,14 +3,17 @@ package com.spartabasic.www.ui.cats
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.spartabasic.www.R
 import com.spartabasic.www.databinding.FragmentCatsBinding
-import com.spartabasic.www.domain.model.Cat
+import com.spartabasic.www.ui.detail.CatDetailFragment
+import com.spartabasic.www.ui.model.CatItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -34,7 +37,15 @@ class CatsFragment : Fragment(R.layout.fragment_cats) {
     }
 
     private fun initViews() {
-        catsAdapter = CatsRecyclerViewAdapter()
+
+        catsAdapter = CatsRecyclerViewAdapter { catItem ->
+            parentFragmentManager.commit {
+                val catDetailFragment = CatDetailFragment()
+                catDetailFragment.arguments = bundleOf("catItem" to catItem)
+                replace(R.id.fragmentContainerView, catDetailFragment)
+                addToBackStack("CatDetailFragment")
+            }
+        }
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.adapter = catsAdapter
     }
@@ -54,7 +65,7 @@ class CatsFragment : Fragment(R.layout.fragment_cats) {
         }
     }
 
-    private fun setCatsToRecyclerView(cats: List<Cat>) {
+    private fun setCatsToRecyclerView(cats: List<CatItem>) {
         catsAdapter?.submitList(cats)
     }
 

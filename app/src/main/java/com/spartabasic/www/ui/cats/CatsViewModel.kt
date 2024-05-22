@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spartabasic.www.domain.model.Cat
 import com.spartabasic.www.domain.usecase.FetchCatsUseCase
+import com.spartabasic.www.ui.model.CatItem
+import com.spartabasic.www.ui.model.toPresentationModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +51,7 @@ constructor(
                 }
                 _uiState.update { state ->
                     state.copy(
-                        cats = state.cats + fetchedCats
+                        cats = state.cats + fetchedCats.map(Cat::toPresentationModel)
                     )
                 }
             }.catch {
@@ -59,7 +61,7 @@ constructor(
 
     data class CatsUiState(
         val isLoading: Boolean = false,
-        val cats: List<Cat> = emptyList(),
+        val cats: List<CatItem> = emptyList(),
         val isEnd: Boolean = false,
     )
 }

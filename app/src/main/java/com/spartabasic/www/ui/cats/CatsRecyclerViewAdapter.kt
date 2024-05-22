@@ -6,15 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.spartabasic.www.BuildConfig
 import com.spartabasic.www.databinding.ItemCatBinding
-import com.spartabasic.www.domain.model.Cat
+import com.spartabasic.www.ui.model.CatItem
 
-class CatsRecyclerViewAdapter :
-    ListAdapter<Cat, CatsRecyclerViewAdapter.CatViewHolder>(CatDiffCallback) {
+class CatsRecyclerViewAdapter(
+    private val onClickCat: (CatItem) -> Unit,
+) : ListAdapter<CatItem, CatsRecyclerViewAdapter.CatViewHolder>(CatDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatViewHolder {
         return CatViewHolder(
+            onClickCat = onClickCat,
             binding = ItemCatBinding.inflate(LayoutInflater.from(parent.context), parent, false),
         )
     }
@@ -24,12 +25,24 @@ class CatsRecyclerViewAdapter :
     }
 
     class CatViewHolder(
+        private val onClickCat: (CatItem) -> Unit,
         private val binding: ItemCatBinding
     ) : ViewHolder(binding.root) {
-        fun bind(cat: Cat) {
+        private var cat: CatItem? = null
+
+        init {
+            binding.root.setOnClickListener {
+                cat?.let {
+                    onClickCat(it)
+                }
+            }
+        }
+
+        fun bind(cat: CatItem) {
+            this.cat = cat
             Glide
                 .with(binding.root)
-                .load(BuildConfig.CATAAS_BASE_URL.plus("/cat/").plus(cat.id))
+                .load(cat.imageUrl)
                 .sizeMultiplier(0.5f)
                 .into(binding.imageView)
 
@@ -37,12 +50,12 @@ class CatsRecyclerViewAdapter :
         }
     }
 
-    companion object CatDiffCallback : DiffUtil.ItemCallback<Cat>() {
-        override fun areItemsTheSame(oldItem: Cat, newItem: Cat): Boolean {
+    companion object CatDiffCallback : DiffUtil.ItemCallback<CatItem>() {
+        override fun areItemsTheSame(oldItem: CatItem, newItem: CatItem): Boolean {
             return oldItem.id == newItem.id && oldItem.tags == newItem.tags
         }
 
-        override fun areContentsTheSame(oldItem: Cat, newItem: Cat): Boolean {
+        override fun areContentsTheSame(oldItem: CatItem, newItem: CatItem): Boolean {
             return oldItem == newItem
         }
 

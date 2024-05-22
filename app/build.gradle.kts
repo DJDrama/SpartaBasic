@@ -3,6 +3,9 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.googleDaggerHiltAndroid)
+    alias(libs.plugins.googleDevToolsKsp)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -25,17 +28,14 @@ android {
             projectRootDir = rootDir,
             providers = providers
         )
-        val apiKey = gradleLocalProperties.getProperty("REST_API_KEY")
-        val baseUrl = gradleLocalProperties.getProperty("KAKAO_BASE_URL")
+        val baseUrl = gradleLocalProperties.getProperty("CATAAS_BASE_URL")
         debug {
-            buildConfigField("String", "REST_API_KEY", "\"$apiKey\"")
-            buildConfigField("String", "KAKAO_BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "CATAAS_BASE_URL", "\"$baseUrl\"")
             isDebuggable = true
             isMinifyEnabled = false
         }
         release {
-            buildConfigField("String", "REST_API_KEY", "\"$apiKey\"")
-            buildConfigField("String", "KAKAO_BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "CATAAS_BASE_URL", "\"$baseUrl\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -77,4 +77,9 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi.adapters)
+
+    implementation(libs.glide)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }

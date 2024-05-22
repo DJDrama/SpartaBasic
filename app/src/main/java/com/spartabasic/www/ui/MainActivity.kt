@@ -1,4 +1,4 @@
-package com.spartabasic.www
+package com.spartabasic.www.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +8,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import com.spartabasic.www.R
 import com.spartabasic.www.databinding.ActivityMainBinding
-import com.spartabasic.www.ui.ModernGuessFragment
+import com.spartabasic.www.ui.cats.CatsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -37,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private fun setFragment() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
-            add<ModernGuessFragment>(R.id.fragmentContainerView)
+            add<CatsFragment>(R.id.fragmentContainerView)
         }
     }
 

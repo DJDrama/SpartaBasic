@@ -11,6 +11,7 @@ import com.spartabasic.www.R
 import com.spartabasic.www.data.AnswerType
 import com.spartabasic.www.data.MyRecords
 import com.spartabasic.www.databinding.FragmentGuessBinding
+import com.spartabasic.www.ui.search.SearchFragment
 
 class ModernGuessFragment : Fragment(R.layout.fragment_guess), View.OnClickListener {
     private var _binding: FragmentGuessBinding? = null
@@ -64,6 +65,7 @@ class ModernGuessFragment : Fragment(R.layout.fragment_guess), View.OnClickListe
         binding.clickButton.setOnClickListener(this)
         binding.restartButton.setOnClickListener(this)
         binding.checkRecordButton.setOnClickListener(this)
+        binding.btnSearch.setOnClickListener(this)
     }
 
 
@@ -100,8 +102,16 @@ class ModernGuessFragment : Fragment(R.layout.fragment_guess), View.OnClickListe
                 binding.restartButton -> viewModel.initializeAndStart()
                 binding.checkRecordButton -> checkRecordsAndNavigateToRecordsScreen()
                 binding.clickButton -> checkAnswerAndShowToast()
+                binding.btnSearch -> navigateToSearchScreen()
             }
         }
+    }
+
+    private fun navigateToSearchScreen(){
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainerView, SearchFragment())
+            .addToBackStack("SearchFragment")
+            .commit()
     }
 
     private fun navigateToMyInformationScreen() {

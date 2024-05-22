@@ -6,6 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import com.spartabasic.www.databinding.ActivityMainBinding
 import com.spartabasic.www.ui.ModernGuessFragment
 
@@ -33,13 +35,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFragment() {
-        supportFragmentManager
-            .beginTransaction()
-            //.replace(binding.fragmentContainerView.id, GuessFragment(), "GuessFragment")
-            .replace(binding.fragmentContainerView.id, ModernGuessFragment(), "ModernGuessFragment")
-            //.addToBackStack("GuessFragment")
-            .addToBackStack("ModernGuessFragment")
-            .commit()
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<ModernGuessFragment>(R.id.fragmentContainerView)
+        }
     }
 
     override fun onStart() {

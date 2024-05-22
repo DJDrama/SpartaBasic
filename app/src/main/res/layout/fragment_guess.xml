@@ -4,6 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:text="@string/search"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="24dp"
+        android:layout_height="wrap_content"/>
+
     <ImageView
         android:id="@+id/iv_profile"
         android:layout_width="wrap_content"

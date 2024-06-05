@@ -15,6 +15,8 @@ import com.spartabasic.www.databinding.FragmentCatsBinding
 import com.spartabasic.www.ui.detail.CatDetailFragment
 import com.spartabasic.www.ui.model.CatItem
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -48,6 +50,10 @@ class CatsFragment : Fragment(R.layout.fragment_cats) {
         }
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.adapter = catsAdapter
+
+        binding.button.setOnClickListener {
+           viewModel.selectRandomCat()
+        }
     }
 
     private fun collectFlows() {
@@ -60,6 +66,26 @@ class CatsFragment : Fragment(R.layout.fragment_cats) {
                 }
                 launch {
                     viewModel.errorState.collect(::showError)
+                }
+                launch {
+                    viewModel.sharedFlow.collect {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                /*launch {
+                    viewModel.stateFlow.collect{
+                        if(it.isNotEmpty())
+                            try {
+                                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                            } finally {
+                                viewModel.setRandomIdToEmptyString()
+                            }
+                    }
+                }*/
+                launch {
+                    viewModel.channel.collect {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

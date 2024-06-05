@@ -10,3 +10,4 @@ constructor(
     operator fun invoke(limit: Int, page: Int, tags: String?) =
         catsRepository.getCats(limit = limit, page = page, tags = tags)
 }
+

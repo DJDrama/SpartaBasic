@@ -13,3 +13,7 @@ interface RetrofitCataasNetworkApi {
     ): List<NetworkCat>
 
 }
+
+interface Ktor {
+
+}

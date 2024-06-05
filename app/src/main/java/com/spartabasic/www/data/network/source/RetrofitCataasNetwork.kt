@@ -13,4 +13,5 @@ constructor(
     override suspend fun getCats(limit: Int, page: Int, tags: String?): List<NetworkCat> {
         return retrofitCataasNetworkApi.getCats(limit = limit, skip = page, tags = tags)
     }
+
 }
